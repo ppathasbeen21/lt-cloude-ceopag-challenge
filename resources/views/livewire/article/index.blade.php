@@ -51,7 +51,7 @@
                         </div>
 
                         <p class="text-muted small mb-2">
-                            <strong>Devs:</strong>
+                            <strong>Autores:</strong>
                             <span class="badge bg-info text-dark">{{ $article->developers->count() }}</span>
                             @foreach($article->developers->take(3) as $dev)
                                 <span class="badge bg-light text-dark border">{{ $dev->name }}</span>
