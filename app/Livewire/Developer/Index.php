@@ -3,6 +3,7 @@
 namespace App\Livewire\Developer;
 
 use App\Models\Developer;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -13,6 +14,7 @@ class Index extends Component
     public $search = '';
     public $skillFilter = '';
     public $seniorityFilter = '';
+    public $deleteId = null;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -31,24 +33,43 @@ class Index extends Component
         $this->resetPage();
     }
 
+    public function confirmDelete($id)
+    {
+        $this->deleteId = $id;
+    }
+
+    public function delete()
+    {
+        $developer = Developer::where('id', $this->deleteId)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
+
+        $developer->articles()->detach();
+        $developer->delete();
+
+        $this->deleteId = null;
+        session()->flash('message', 'Desenvolvedor excluído com sucesso!');
+    }
+
     public function render()
     {
         $developers = Developer::query()
             ->with('articles')
-            ->when($this->search, function($query) {
-                $query->where('name', 'like', "%{$this->search}%")
-                    ->orWhere('email', 'like', "%{$this->search}%");
+            ->where('user_id', Auth::id())
+            ->when($this->search, function ($query) {
+                $query->where(function ($q) {
+                    $q->where('name', 'like', "%{$this->search}%")
+                        ->orWhere('email', 'like', "%{$this->search}%");
+                });
             })
-            ->when($this->skillFilter, function($query) {
+            ->when($this->skillFilter, function ($query) {
                 $query->whereJsonContains('skills', $this->skillFilter);
             })
-            ->when($this->seniorityFilter, function($query) {
+            ->when($this->seniorityFilter, function ($query) {
                 $query->where('seniority', $this->seniorityFilter);
             })
-            ->paginate(10);
+            ->paginate(9);
 
-        return view('livewire.developer.index', [
-            'developers' => $developers
-        ]);
+        return view('livewire.developer.index', compact('developers'));
     }
 }
