@@ -47,7 +47,11 @@
          style="background-color: var(--bs-body-bg); border-bottom:1px solid var(--bs-border-color);">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{{ route('home') }}">
-                🚀 {{ config('app.name', 'LT Cloud') }}
+                <img src="{{ asset('images/logoceopag.png') }}"
+                     width="20px"
+                     height="20px"
+                     alt="Logo Ceopag">
+                <span class="lh-1">DevLog CeoPag</span>
             </a>
 
             <button class="navbar-toggler" type="button"
@@ -123,7 +127,6 @@
 @livewireScripts
 
 <script>
-    // Dark / Light mode persistente via localStorage
     (function () {
         const saved = localStorage.getItem('theme') || 'light';
         document.getElementById('html-root').setAttribute('data-bs-theme', saved);
