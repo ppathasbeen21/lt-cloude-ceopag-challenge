@@ -17,6 +17,18 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
+        $patrick = User::create([
+            'name' => 'Patrick',
+            'email' => 'pats@ceopag.com',
+            'password' => Hash::make('password'),
+        ]);
+
+        // Outros 4 usuários aleatórios
+        $otherUsers = User::factory(4)->create();
+
+        // Todos os usuários juntos
+        $allUsers = $otherUsers->prepend($patrick);
+
         $categories = collect([
             'Notícias',
             'Novidades',
@@ -31,22 +43,21 @@ class DatabaseSeeder extends Seeder
             ]);
         });
 
-        $developers = Developer::factory(10)->create();
+        $allUsers->each(function ($user) use ($categories) {
+            $developers = Developer::factory(rand(3, 6))->create([
+                'user_id' => $user->id,
+            ]);
 
-        $articles = Article::factory(20)->create([
-            'category_id' => fn() => $categories->random()->id
-        ]);
+            $articles = Article::factory(rand(3, 8))->create([
+                'user_id' => $user->id,
+                'category_id' => fn() => $categories->random()->id,
+            ]);
 
-        $articles->each(function ($article) use ($developers) {
-            $article->developers()->attach(
-                $developers->random(rand(1, 3))->pluck('id')->toArray()
-            );
+            $articles->each(function ($article) use ($developers) {
+                $article->developers()->attach(
+                    $developers->random(rand(1, 3))->pluck('id')->toArray()
+                );
+            });
         });
-
-        User::factory()->create([
-            'name' => 'Patrick',
-            'email' => 'pats@ceopag.com',
-            'password' => Hash::make('password'),
-        ]);
     }
 }
