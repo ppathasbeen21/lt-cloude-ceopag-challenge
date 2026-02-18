@@ -10,6 +10,7 @@ class Article extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
+        'category_id',
         'title',
         'slug',
         'content',
@@ -26,6 +27,10 @@ class Article extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
     public function developers()
     {
         return $this->belongsToMany(Developer::class);

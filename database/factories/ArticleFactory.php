@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
@@ -22,6 +23,7 @@ class ArticleFactory extends Factory
 
         return [
             'user_id' => User::factory(),
+            'category_id' => Category::factory(),
             'title' => $title,
             'slug' => Str::slug($title),
             'content' => fake()->paragraphs(5, true),
