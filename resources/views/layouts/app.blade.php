@@ -3,42 +3,21 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>{{ config('app.name', 'LT Cloud') }}</title>
-
-    <!-- Fonts -->
+    <title>{{ config('app.name', 'DevLog CeoPag') }}</title>
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-
-    <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
     @livewireStyles
-
     <style>
-        body {
-            font-family: 'Nunito', sans-serif;
-        }
-
-        [data-bs-theme="dark"] .navbar {
-            background-color: #1e1e2d !important;
-        }
-
-        [data-bs-theme="dark"] .card {
-            border-color: #333;
-        }
-
-        .cursor-pointer {
-            cursor: pointer;
-        }
-
-        .btn-theme-toggle {
-            border: none;
-            background: transparent;
-            font-size: 1.2rem;
-        }
+        body { font-family: 'Nunito', sans-serif; }
+        [data-bs-theme="dark"] .navbar { background-color: #1e1e2d !important; }
+        [data-bs-theme="dark"] .card { border-color: #333; }
+        [data-bs-theme="dark"] .dropdown-menu { background-color: #2a2a3d; border-color: #444; }
+        [data-bs-theme="dark"] .dropdown-item { color: #ccc; }
+        [data-bs-theme="dark"] .dropdown-item:hover { background-color: #3a3a5a; color: #fff; }
+        .cursor-pointer { cursor: pointer; }
+        .btn-theme-toggle { border: none; background: transparent; font-size: 1.2rem; }
     </style>
 </head>
 <body>
@@ -47,53 +26,54 @@
          style="background-color: var(--bs-body-bg); border-bottom:1px solid var(--bs-border-color);">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{{ route('home') }}">
-                <img src="{{ asset('images/logoceopag.png') }}"
-                     width="20px"
-                     height="20px"
-                     alt="Logo Ceopag">
+                <img src="{{ asset('images/logoceopag.png') }}" width="20px" height="20px" alt="Logo Ceopag">
                 <span class="lh-1">DevLog CeoPag</span>
             </a>
 
             <button class="navbar-toggler" type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
+                    data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto">
                     @auth
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('articles.*') ? 'active fw-bold' : '' }}"
-                               href="{{ route('articles.index') }}">📝 Artigos</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {{ request()->routeIs('articles.*') || request()->routeIs('categories.*') ? 'active fw-bold' : '' }}"
+                               href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                📝 Artigos
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ route('articles.index') }}">📋 Listar Artigos</a></li>
+                                <li><a class="dropdown-item" href="{{ route('articles.create') }}">✏️ Novo Artigo</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ route('categories.index') }}">🏷️ Categorias</a></li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('developers.*') ? 'active fw-bold' : '' }}"
-                               href="{{ route('developers.index') }}">👩‍💻 Desenvolvedores</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {{ request()->routeIs('developers.*') ? 'active fw-bold' : '' }}"
+                               href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                👩‍💻 Desenvolvedores
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ route('developers.index') }}">📋 Listar Devs</a></li>
+                                <li><a class="dropdown-item" href="{{ route('developers.create') }}">➕ Novo Dev</a></li>
+                            </ul>
                         </li>
                     @endauth
                 </ul>
 
                 <ul class="navbar-nav ms-auto align-items-center gap-2">
                     <li class="nav-item">
-                        <button class="btn-theme-toggle nav-link" id="theme-toggle" title="Alternar tema">
-                            🌙
-                        </button>
+                        <button class="btn-theme-toggle nav-link" id="theme-toggle" title="Alternar tema">🌙</button>
                     </li>
-
                     @guest
                         @if (Route::has('login'))
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">Login</a>
-                            </li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
                         @endif
                         @if (Route::has('register'))
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('register') }}">Registrar</a>
-                            </li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">Registrar</a></li>
                         @endif
                     @else
                         <li class="nav-item dropdown">
@@ -128,12 +108,13 @@
     (function () {
         const saved = localStorage.getItem('theme') || 'light';
         document.getElementById('html-root').setAttribute('data-bs-theme', saved);
-        updateToggleIcon(saved);
 
         function updateToggleIcon(theme) {
             const btn = document.getElementById('theme-toggle');
             if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
         }
+
+        updateToggleIcon(saved);
 
         document.addEventListener('DOMContentLoaded', function () {
             updateToggleIcon(localStorage.getItem('theme') || 'light');
