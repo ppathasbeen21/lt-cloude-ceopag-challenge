@@ -42,31 +42,44 @@
     <div class="card shadow-sm">
         <table class="table table-hover mb-0">
             <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Slug</th>
-                    <th class="text-center">Artigos</th>
-                    <th></th>
-                </tr>
+            <tr>
+                <th>Nome</th>
+                <th>Slug</th>
+                <th class="text-center">Artigos</th>
+                <th></th>
+            </tr>
             </thead>
             <tbody>
-                @forelse($categories as $category)
-                    <tr>
-                        <td class="align-middle fw-semibold">{{ $category->name }}</td>
-                        <td class="align-middle text-muted small">{{ $category->slug }}</td>
-                        <td class="align-middle text-center">
-                            <span class="badge bg-info text-dark">{{ $category->articles_count }}</span>
-                        </td>
-                        <td class="align-middle text-end">
-                            <button wire:click="confirmDelete({{ $category->id }})"
-                                    class="btn btn-sm btn-danger">Excluir</button>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="text-muted text-center py-4">Nenhuma categoria cadastrada.</td>
-                    </tr>
-                @endforelse
+            @forelse($categories as $category)
+                <tr>
+                    <td class="align-middle">
+                        @if($editId === $category->id)
+                            <input type="text" wire:model="editName"
+                                   class="form-control form-control-sm @error('editName') is-invalid @enderror">
+                            @error('editName') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                        @else
+                            <span class="fw-semibold">{{ $category->name }}</span>
+                        @endif
+                    </td>
+                    <td class="align-middle text-muted small">{{ $category->slug }}</td>
+                    <td class="align-middle text-center">
+                        <span class="badge bg-info text-dark">{{ $category->articles_count }}</span>
+                    </td>
+                    <td class="align-middle text-end">
+                        @if($editId === $category->id)
+                            <button wire:click="update" class="btn btn-sm btn-success me-1">Salvar</button>
+                            <button wire:click="cancelEdit" class="btn btn-sm btn-secondary">Cancelar</button>
+                        @else
+                            <button wire:click="startEdit({{ $category->id }})" class="btn btn-sm btn-warning me-1">Editar</button>
+                            <button wire:click="confirmDelete({{ $category->id }})" class="btn btn-sm btn-danger">Excluir</button>
+                        @endif
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="4" class="text-muted text-center py-4">Nenhuma categoria cadastrada.</td>
+                </tr>
+            @endforelse
             </tbody>
         </table>
     </div>

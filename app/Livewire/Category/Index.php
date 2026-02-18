@@ -9,6 +9,8 @@ use Livewire\Component;
 class Index extends Component
 {
     public $name = '';
+    public $editId = null;
+    public $editName = '';
     public $deleteId = null;
     public $showForm = false;
 
@@ -28,6 +30,36 @@ class Index extends Component
         $this->name = '';
         $this->showForm = false;
         session()->flash('message', 'Categoria criada com sucesso!');
+    }
+
+    public function startEdit($id)
+    {
+        $category = Category::findOrFail($id);
+        $this->editId = $id;
+        $this->editName = $category->name;
+    }
+
+    public function cancelEdit()
+    {
+        $this->editId = null;
+        $this->editName = '';
+    }
+
+    public function update()
+    {
+        $this->validate([
+            'editName' => 'required|min:2|max:100|unique:categories,name,' . $this->editId,
+        ]);
+
+        $category = Category::findOrFail($this->editId);
+        $category->update([
+            'name' => $this->editName,
+            'slug' => Str::slug($this->editName),
+        ]);
+
+        $this->editId = null;
+        $this->editName = '';
+        session()->flash('message', 'Categoria atualizada com sucesso!');
     }
 
     public function confirmDelete($id)
