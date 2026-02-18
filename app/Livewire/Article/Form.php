@@ -109,6 +109,6 @@ class Form extends Component
         return view('livewire.article.form', [
             'categories' => Category::orderBy('name')->get(),
             'developers' => Developer::where('user_id', Auth::id())->orderBy('name')->get(),
-        ]);
+        ])->layout('layouts.app');
     }
 }

@@ -1,3 +1,4 @@
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <div class="container mt-4">
     <div class="card shadow-sm">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -52,11 +53,12 @@
                     <label class="form-label fw-bold">Conteúdo <span class="text-danger">*</span></label>
                     <textarea id="article-content"
                               wire:model="content"
-                              class="form-control @error('content') is-invalid @enderror"
-                              rows="10"
-                              placeholder="Escreva o conteúdo do artigo..."></textarea>
+                              class="d-none @error('content') is-invalid @enderror"></textarea>
+                    <div id="quill-editor"
+                         class="bg-white @error('content') border border-danger @enderror"
+                         style="height:300px; border-radius: 0 0 4px 4px;"></div>
                     @error('content')
-                    <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <div class="text-danger small mt-1">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="mb-3">
@@ -139,27 +141,40 @@
     </div>
 </div>
 
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 <script>
-    function initTinyMCE() {
-        tinymce.remove();
-        tinymce.init({
-            selector: '#article-content',
-            plugins: 'lists link image code table',
-            toolbar: 'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright | bullist numlist | link image | code',
-            height: 350,
-            menubar: false,
-            setup: function (editor) {
-                // Sync de volta para o textarea/Livewire ao salvar
-                editor.on('change', function () {
-                    editor.save();
-                    let el = document.getElementById('article-content');
-                    el.dispatchEvent(new Event('input'));
-                });
+    function initQuill() {
+        if (document.querySelector('#quill-editor .ql-editor')) {
+            return;
+        }
+
+        const quill = new Quill('#quill-editor', {
+            theme: 'snow',
+            placeholder: 'Escreva o conteúdo do artigo...',
+            modules: {
+                toolbar: [
+                    [{ header: [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    ['link', 'blockquote', 'code-block'],
+                    ['clean']
+                ]
+            }
+        });
+
+        const textarea = document.getElementById('article-content');
+        if (textarea && textarea.value) {
+            quill.root.innerHTML = textarea.value;
+        }
+
+        quill.on('text-change', function () {
+            if (textarea) {
+                textarea.value = quill.root.innerHTML;
+                textarea.dispatchEvent(new Event('input'));
             }
         });
     }
 
-    document.addEventListener('DOMContentLoaded', initTinyMCE);
-    document.addEventListener('livewire:navigated', initTinyMCE);
+    document.addEventListener('DOMContentLoaded', initQuill);
+    document.addEventListener('livewire:navigated', initQuill);
 </script>

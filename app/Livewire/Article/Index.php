@@ -56,6 +56,7 @@ class Index extends Component
             ->latest()
             ->paginate(9);
 
-        return view('livewire.article.index', compact('articles'));
+        return view('livewire.article.index', compact('articles'))
+            ->layout('layouts.app');
     }
 }

@@ -117,8 +117,8 @@
             <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-body d-flex gap-3 flex-wrap">
-                        <a href="{{ route('developers.create') }}" class="btn btn-primary">+ Novo Desenvolvedor</a>
                         <a href="{{ route('articles.create') }}" class="btn btn-success">+ Novo Artigo</a>
+                        <a href="{{ route('developers.create') }}" class="btn btn-primary">+ Novo Desenvolvedor</a>
                     </div>
                 </div>
             </div>

@@ -67,12 +67,12 @@
                 <ul class="navbar-nav me-auto">
                     @auth
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('developers.*') ? 'active fw-bold' : '' }}"
-                               href="{{ route('developers.index') }}">👩‍💻 Desenvolvedores</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('articles.*') ? 'active fw-bold' : '' }}"
                                href="{{ route('articles.index') }}">📝 Artigos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('developers.*') ? 'active fw-bold' : '' }}"
+                               href="{{ route('developers.index') }}">👩‍💻 Desenvolvedores</a>
                         </li>
                     @endauth
                 </ul>
@@ -118,9 +118,7 @@
     </nav>
 
     <main class="py-4">
-        <main class="py-4">
-            @yield('content')
-        </main>
+        {{ $slot }}
     </main>
 </div>
 

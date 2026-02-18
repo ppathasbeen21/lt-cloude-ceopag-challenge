@@ -70,6 +70,7 @@ class Index extends Component
             })
             ->paginate(9);
 
-        return view('livewire.developer.index', compact('developers'));
+        return view('livewire.developer.index', compact('developers'))
+            ->layout('layouts.app');
     }
 }
