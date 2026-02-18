@@ -114,8 +114,9 @@
     </nav>
 
     <main class="py-4">
-        @yield('content')
-        @livewire('...')
+        <main class="py-4">
+            @yield('content')
+        </main>
     </main>
 </div>
 
