@@ -42,7 +42,6 @@ class Form extends Component
     {
         if ($articleId) {
             $article = Article::where('id', $articleId)
-                ->where('user_id', Auth::id())
                 ->firstOrFail();
 
             $this->articleId = $article->id;

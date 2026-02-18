@@ -41,7 +41,6 @@ class Index extends Component
     public function delete()
     {
         $developer = Developer::where('id', $this->deleteId)
-            ->where('user_id', Auth::id())
             ->firstOrFail();
 
         $developer->articles()->detach();
@@ -55,7 +54,7 @@ class Index extends Component
     {
         $developers = Developer::query()
             ->with('articles')
-            ->where('user_id', Auth::id())
+//            ->where('user_id', Auth::id())
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('name', 'like', "%{$this->search}%")

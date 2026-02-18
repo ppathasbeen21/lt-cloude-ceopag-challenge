@@ -23,10 +23,8 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
         ]);
 
-        // Outros 4 usuários aleatórios
-        $otherUsers = User::factory(4)->create();
+        $otherUsers = User::factory(2)->create();
 
-        // Todos os usuários juntos
         $allUsers = $otherUsers->prepend($patrick);
 
         $categories = collect([

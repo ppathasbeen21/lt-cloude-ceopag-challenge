@@ -30,7 +30,6 @@ class Index extends Component
     public function delete()
     {
         $article = Article::where('id', $this->deleteId)
-            ->where('user_id', Auth::id())
             ->firstOrFail();
 
         if ($article->cover_image) {
@@ -48,7 +47,6 @@ class Index extends Component
     {
         $articles = Article::query()
             ->with(['developers', 'category'])
-            ->where('user_id', Auth::id())
             ->when($this->search, function ($query) {
                 $query->where('title', 'like', "%{$this->search}%")
                     ->orWhere('slug', 'like', "%{$this->search}%");
