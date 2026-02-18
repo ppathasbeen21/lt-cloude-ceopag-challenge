@@ -48,14 +48,13 @@
                                             <div class="text-muted small">
                                                 <strong>Autores:</strong>
                                                 @forelse($article->developers->take(3) as $dev)
-                                                    <span
-                                                        class="badge bg-light text-dark border">{{ $dev->name }}</span>
+                                                    <span class="badge bg-light text-dark border">{{ $dev->name }}</span>
                                                 @empty
                                                     <span class="text-muted fst-italic">Sem autor</span>
                                                 @endforelse
-                                                @if($article->developers->count() > 3)
-                                                    <span
-                                                        class="text-muted">+{{ $article->developers->count() - 3 }}</span>
+                                                @php $totalDevs = $article->developers->count(); @endphp
+                                                @if($totalDevs > 3)
+                                                    <span class="text-muted">+{{ $totalDevs - 3 }}</span>
                                                 @endif
                                             </div>
                                         </div>

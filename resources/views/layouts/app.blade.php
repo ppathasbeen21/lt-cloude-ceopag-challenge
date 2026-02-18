@@ -98,7 +98,11 @@
     </nav>
 
     <main class="py-4">
-        {{ $slot }}
+        @if(isset($slot))
+            {{ $slot }}
+        @else
+            @yield('content')
+        @endif
     </main>
 </div>
 
