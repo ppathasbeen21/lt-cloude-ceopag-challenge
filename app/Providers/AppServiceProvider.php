@@ -21,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
     {
         if (config('app.env') === 'production') {
             URL::forceScheme('https');
+            URL::forceRootUrl(config('app.url'));
         }
         Gate::policy(Article::class, ArticlePolicy::class);
         Gate::policy(Developer::class, DeveloperPolicy::class);
