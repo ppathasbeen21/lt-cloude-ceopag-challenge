@@ -7,57 +7,103 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+# DevLog CeoPag
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Mini-aplicação de gerenciamento de artigos e desenvolvedores, construída com **Laravel 12 + Livewire** como desafio técnico para a LT Cloud.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Funcionalidades
 
-## Learning Laravel
+- Autenticação completa (login, registro, reset de senha)
+- CRUD de **Desenvolvedores** com campos de nome, e-mail, senioridade (Jr/Pl/Sr) e skills em tags
+- CRUD de **Artigos** com título, slug automático, conteúdo, data de publicação e imagem de capa
+- Relação **N:N** entre Artigos e Desenvolvedores
+- Filtros em tempo real via Livewire (busca, skill, senioridade)
+- Isolamento de dados por usuário via **Policies**
+- Tema claro/escuro persistente
+- Layout responsivo com Bootstrap
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Stack
 
-## Laravel Sponsors
+- PHP 8.3 + Laravel 12
+- Livewire 4
+- Bootstrap 5
+- SQLite
+- Docker
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## Instalação
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Pré-requisitos
 
-## Contributing
+- Docker e Docker Compose instalados
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Passo a passo
 
-## Code of Conduct
+```bash
+# 1. Clone o repositório
+git clone
+cd lt-cloude-ceopag-challenge
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# 2. Suba os containers
+docker compose up -d
 
-## Security Vulnerabilities
+# 3. Instale as dependências PHP
+docker compose exec lt-cloud-challenge.local composer install
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# 4. Configure o ambiente
+docker compose exec lt-cloud-challenge.local cp .env.example .env
+docker compose exec lt-cloud-challenge.local php artisan key:generate
 
-## License
+# 5. Rode as migrations e seeds
+docker compose exec lt-cloud-challenge.local php artisan migrate --seed
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# 6. Compile os assets
+docker compose exec lt-cloud-challenge.local npm install
+docker compose exec lt-cloud-challenge.local npm run build
+```
 
+---
+
+## Credenciais demo
+
+| Campo | Valor |
+|-------|-------|
+| E-mail | `patrick@ceopag.com` |
+| Senha | `password` |
+
+---
+
+## Comandos úteis
+
+```bash
+# Subir os containers
+docker compose up -d
+
+# Derrubar os containers
+docker compose down
+
+# Rodar migrations + seeds do zero
+docker compose exec lt-cloud-challenge.local php artisan migrate:fresh --seed
+
+# Assets em modo desenvolvimento
 docker compose exec lt-cloud-challenge.local npm run dev
 
-docker compose up -d  
+# Limpar caches
+docker compose exec lt-cloud-challenge.local php artisan cache:clear
+docker compose exec lt-cloud-challenge.local php artisan view:clear
+```
+
+---
+
+## Diferenciais implementados
+
+- **Factories e Seeders** com Faker para geração de dados fake
+- **Policies** garantindo que cada usuário veja apenas seus próprios dados
+- **Slug automático** gerado a partir do título do artigo
+- **Upload de imagem de capa** com preview e remoção
+- **Tema claro/escuro** persistido no localStorage
