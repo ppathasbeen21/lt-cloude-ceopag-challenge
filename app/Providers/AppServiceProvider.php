@@ -20,10 +20,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if (config('app.env') === 'production') {
-            /*Setup de produção*/
             URL::forceScheme('https');
             URL::forceRootUrl(config('app.url'));
         }
+        \Livewire\Livewire::addPersistentMiddleware([
+            \Illuminate\Session\Middleware\StartSession::class,
+        ]);
         Gate::policy(Article::class, ArticlePolicy::class);
         Gate::policy(Developer::class, DeveloperPolicy::class);
     }
