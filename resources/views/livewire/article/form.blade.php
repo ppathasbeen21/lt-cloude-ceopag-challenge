@@ -10,7 +10,7 @@
                 <div class="row mb-3">
                     <div class="col-12">
                         <label class="form-label fw-bold">Título <span class="text-danger">*</span></label>
-                        <input type="text" wire:model.live="title"
+                        <input type="text" wire:model.lazy="title"
                                class="form-control @error('title') is-invalid @enderror"
                                placeholder="Título do artigo">
                         @error('title')

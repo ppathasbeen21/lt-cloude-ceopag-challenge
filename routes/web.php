@@ -17,12 +17,12 @@ Auth::routes();
 Route::middleware('auth')->group(function () {
 
     Route::get('/home', Home::class)->name('home');
-    Route::get('/articles',                   ArticleIndex::class)->name('articles.index');
-    Route::get('/articles/create',            ArticleForm::class)->name('articles.create');
-    Route::get('/articles/{articleId}/edit',  ArticleForm::class)->name('articles.edit');
+    Route::get('/articles', ArticleIndex::class)->name('articles.index');
+    Route::get('/articles/create', ArticleForm::class)->name('articles.create');
+    Route::get('/articles/{articleId}/edit', ArticleForm::class)->name('articles.edit');
     Route::get('/categories', CategoryIndex::class)->name('categories.index');
-    Route::get('/developers',                    DeveloperIndex::class)->name('developers.index');
-    Route::get('/developers/create',             DeveloperForm::class)->name('developers.create');
+    Route::get('/developers', DeveloperIndex::class)->name('developers.index');
+    Route::get('/developers/create', DeveloperForm::class)->name('developers.create');
     Route::get('/developers/{developerId}/edit', DeveloperForm::class)->name('developers.edit');
 
 });
