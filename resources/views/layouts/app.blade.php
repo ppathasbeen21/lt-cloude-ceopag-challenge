@@ -18,12 +18,15 @@
         [data-bs-theme="dark"] .dropdown-item:hover { background-color: #3a3a5a; color: #fff; }
         .cursor-pointer { cursor: pointer; }
         .btn-theme-toggle { border: none; background: transparent; font-size: 1.2rem; }
+        .img-preview { max-height: 120px; }
+        .img-article-thumb { max-height: 140px; }
+        .modal-backdrop-custom { background: rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
 <div id="app">
     <nav class="navbar navbar-expand-md shadow-sm"
-         style="background-color: var(--bs-body-bg); border-bottom:1px solid var(--bs-border-color);">
+         class="navbar-light border-bottom">
         <div class="container">
             <a class="navbar-brand fw-bold" href="{{ route('home') }}">
                 <img src="{{ asset('images/logoceopag.png') }}" width="20px" height="20px" alt="Logo Ceopag">

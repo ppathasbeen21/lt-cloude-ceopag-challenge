@@ -38,7 +38,7 @@
                         @foreach($skills as $index => $skill)
                             <span class="badge bg-primary me-1">
                                 {{ $skill }}
-                                <button type="button" wire:click="removeSkill({{ $index }})" class="btn-close btn-close-white" style="font-size: 10px;"></button>
+                                <button type="button" wire:click="removeSkill({{ $index }})" class="btn-close btn-close-white btn-sm"></button>
                             </span>
                         @endforeach
                     </div>

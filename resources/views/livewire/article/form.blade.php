@@ -56,10 +56,8 @@
 
                     @if($existingCover)
                         <div class="mb-2 d-flex align-items-center gap-3">
-                            <img src="{{ Storage::url($existingCover) }}"
-                                 alt="Capa atual"
-                                 class="img-thumbnail"
-                                 style="max-height:120px;">
+                            <img src="{{ Storage::url($existingCover) }}" alt="Capa atual" class="img-thumbnail img-preview">
+
                             <button type="button" wire:click="removeCover" class="btn btn-sm btn-danger">
                                 Remover capa
                             </button>
@@ -76,9 +74,8 @@
                     @if($cover_image)
                         <div class="mt-2">
                             <strong>Preview:</strong><br>
-                            <img src="{{ $cover_image->temporaryUrl() }}"
-                                 class="img-thumbnail mt-1"
-                                 style="max-height:120px;">
+                            <img src="{{ $cover_image->temporaryUrl() }}" class="img-thumbnail mt-1 img-preview">
+
                         </div>
                     @endif
                 </div>
@@ -110,7 +107,7 @@
                                             {{ in_array($developer->id, $selectedDevelopers) ? 'checked' : '' }}>
                                         <label for="dev-{{ $developer->id }}"
                                                class="dev-card d-block border rounded p-2 h-100 cursor-pointer w-100 border-secondary"
-                                               style="transition: all .15s ease;">
+                                              >
                                             <strong>{{ $developer->name }}</strong><br>
                                             <span class="badge bg-secondary mt-1">{{ $developer->seniority }}</span>
                                             @foreach(array_slice($developer->skills, 0, 3) as $skill)

@@ -21,7 +21,7 @@
                             <div class="col-md-3">
                                 <img src="{{ Storage::url($article->cover_image) }}"
                                      class="img-fluid rounded-start h-100"
-                                     style="object-fit:cover; max-height:140px; width:100%;"
+                                     class="w-100 object-fit-cover img-article-thumb"
                                      alt="Capa">
                             </div>
                             <div class="col-md-9">
