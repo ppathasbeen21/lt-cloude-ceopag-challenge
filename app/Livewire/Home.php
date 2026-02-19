@@ -10,7 +10,8 @@ class Home extends Component
 {
     public function render()
     {
-        $articles = Article::with(['developers', 'category'])
+        $articles = Article::with(['developers', 'category', 'user'])
+            ->withCount('developers')
             ->whereNotNull('published_at')
             ->latest('published_at')
             ->take(6)
@@ -22,6 +23,6 @@ class Home extends Component
             ->get();
 
         return view('livewire.home', compact('articles', 'developers'))
-            ->layout('layouts.app');
+            ->layout('layouts.livewire');
     }
 }

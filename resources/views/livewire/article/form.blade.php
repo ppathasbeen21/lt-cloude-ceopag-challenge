@@ -1,4 +1,3 @@
-<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <div class="container mt-4">
     <div class="card shadow-sm">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -9,20 +8,12 @@
 
             <form wire:submit="save" enctype="multipart/form-data">
                 <div class="row mb-3">
-                    <div class="col-md-8">
+                    <div class="col-12">
                         <label class="form-label fw-bold">Título <span class="text-danger">*</span></label>
                         <input type="text" wire:model.live="title"
                                class="form-control @error('title') is-invalid @enderror"
                                placeholder="Título do artigo">
                         @error('title')
-                        <div class="invalid-feedback">{{ $message }}</div> @enderror
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label fw-bold">Slug <span class="text-danger">*</span></label>
-                        <input type="text" wire:model="slug"
-                               class="form-control @error('slug') is-invalid @enderror"
-                               placeholder="gerado-automaticamente">
-                        @error('slug')
                         <div class="invalid-feedback">{{ $message }}</div> @enderror
                     </div>
                 </div>
@@ -50,15 +41,14 @@
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Conteúdo <span class="text-danger">*</span></label>
-                    <textarea id="article-content"
-                              wire:model="content"
-                              class="d-none @error('content') is-invalid @enderror"></textarea>
-                    <div id="quill-editor"
-                         class="bg-white @error('content') border border-danger @enderror"
-                         style="height:300px; border-radius: 0 0 4px 4px;"></div>
+                    <label class="form-label fw-bold">Descrição <span class="text-danger">*</span></label>
+                    <textarea wire:model="content"
+                              rows="10"
+                              class="form-control @error('content') is-invalid @enderror"
+                              placeholder="Escreva o conteúdo do artigo..."></textarea>
                     @error('content')
-                    <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                    <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="mb-3">
@@ -101,21 +91,29 @@
                             <a href="{{ route('developers.create') }}">Cadastre aqui</a>.
                         </div>
                     @else
+                        <style>
+                            .dev-check:checked ~ .dev-card {
+                                background-color: #0dcaf0 !important;
+                                border-color: #0dcaf0 !important;
+                                color: #000;
+                            }
+                        </style>
                         <div class="row row-cols-2 row-cols-md-3 g-2">
                             @foreach($developers as $developer)
                                 <div class="col">
-                                    <div class="form-check border rounded p-2 h-100
-                                        {{ in_array($developer->id, $selectedDevelopers) ? 'border-primary bg-primary bg-opacity-10' : '' }}">
-                                        <input class="form-check-input"
-                                               type="checkbox"
+                                    <div class="position-relative">
+                                        <input type="checkbox"
                                                wire:model="selectedDevelopers"
                                                value="{{ $developer->id }}"
-                                               id="dev-{{ $developer->id }}">
-                                        <label class="form-check-label w-100 cursor-pointer"
-                                               for="dev-{{ $developer->id }}">
+                                               id="dev-{{ $developer->id }}"
+                                               class="dev-check d-none"
+                                            {{ in_array($developer->id, $selectedDevelopers) ? 'checked' : '' }}>
+                                        <label for="dev-{{ $developer->id }}"
+                                               class="dev-card d-block border rounded p-2 h-100 cursor-pointer w-100 border-secondary"
+                                               style="transition: all .15s ease;">
                                             <strong>{{ $developer->name }}</strong><br>
-                                            <span class="badge bg-secondary">{{ $developer->seniority }}</span>
-                                            @foreach(array_slice($developer->skills, 0, 2) as $skill)
+                                            <span class="badge bg-secondary mt-1">{{ $developer->seniority }}</span>
+                                            @foreach(array_slice($developer->skills, 0, 3) as $skill)
                                                 <span class="badge bg-light text-dark border">{{ $skill }}</span>
                                             @endforeach
                                         </label>
@@ -124,7 +122,8 @@
                             @endforeach
                         </div>
                         @error('selectedDevelopers')
-                        <div class="text-danger small mt-1">{{ $message }}</div> @enderror
+                        <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
                     @endif
                 </div>
 
@@ -140,41 +139,3 @@
         </div>
     </div>
 </div>
-
-<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
-<script>
-    function initQuill() {
-        if (document.querySelector('#quill-editor .ql-editor')) {
-            return;
-        }
-
-        const quill = new Quill('#quill-editor', {
-            theme: 'snow',
-            placeholder: 'Escreva o conteúdo do artigo...',
-            modules: {
-                toolbar: [
-                    [{ header: [1, 2, 3, false] }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ list: 'ordered' }, { list: 'bullet' }],
-                    ['link', 'blockquote', 'code-block'],
-                    ['clean']
-                ]
-            }
-        });
-
-        const textarea = document.getElementById('article-content');
-        if (textarea && textarea.value) {
-            quill.root.innerHTML = textarea.value;
-        }
-
-        quill.on('text-change', function () {
-            if (textarea) {
-                textarea.value = quill.root.innerHTML;
-                textarea.dispatchEvent(new Event('input'));
-            }
-        });
-    }
-
-    document.addEventListener('DOMContentLoaded', initQuill);
-    document.addEventListener('livewire:navigated', initQuill);
-</script>

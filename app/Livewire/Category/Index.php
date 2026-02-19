@@ -78,6 +78,6 @@ class Index extends Component
     {
         return view('livewire.category.index', [
             'categories' => Category::withCount('articles')->orderBy('name')->get(),
-        ])->layout('layouts.app');
+        ])->layout('layouts.livewire');
     }
 }

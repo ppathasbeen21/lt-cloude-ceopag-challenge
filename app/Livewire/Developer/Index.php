@@ -18,17 +18,7 @@ class Index extends Component
 
     protected $paginationTheme = 'bootstrap';
 
-    public function updatingSearch()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingSkillFilter()
-    {
-        $this->resetPage();
-    }
-
-    public function updatingSeniorityFilter()
+    public function applyFilters()
     {
         $this->resetPage();
     }
@@ -41,6 +31,7 @@ class Index extends Component
     public function delete()
     {
         $developer = Developer::where('id', $this->deleteId)
+            ->where('user_id', Auth::id())
             ->firstOrFail();
 
         $developer->articles()->detach();
@@ -54,7 +45,7 @@ class Index extends Component
     {
         $developers = Developer::query()
             ->with('articles')
-//            ->where('user_id', Auth::id())
+            ->where('user_id', Auth::id())
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('name', 'like', "%{$this->search}%")
@@ -70,6 +61,6 @@ class Index extends Component
             ->paginate(9);
 
         return view('livewire.developer.index', compact('developers'))
-            ->layout('layouts.app');
+            ->layout('layouts.livewire');
     }
 }

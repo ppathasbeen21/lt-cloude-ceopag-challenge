@@ -1,103 +1,85 @@
 <div class="container mt-4">
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <h2>Meus Artigos</h2>
+        </div>
+    </div>
 
-    @if (session('message'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+    @if (session()->has('message'))
+        <div class="alert alert-success alert-dismissible fade show">
             {{ session('message') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     @endif
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Artigos</h2>
-        <a href="{{ route('articles.create') }}" class="btn btn-primary">+ Novo Artigo</a>
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <input type="text" wire:model="search" class="form-control" placeholder="Buscar por título...">
+        </div>
+        <div class="col-md-4">
+            <select wire:model="developerFilter" class="form-control">
+                <option value="">Todos os desenvolvedores</option>
+                @foreach($developers as $dev)
+                    <option value="{{ $dev->id }}">{{ $dev->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-md-4">
+            <button wire:click="applyFilters" class="btn btn-primary w-100">🔍 Procurar</button>
+        </div>
     </div>
 
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <input type="text" wire:model.live="search" class="form-control" placeholder="Buscar por título ou slug...">
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <a href="{{ route('articles.create') }}" class="btn btn-success">✏️ Novo Artigo</a>
         </div>
     </div>
 
     <div class="row">
-        @forelse($articles as $article)
-            <div class="col-md-4 col-12 mb-4">
-                <div class="card h-100 shadow-sm">
+        @foreach($articles as $article)
+            <div class="col-md-4 col-12 mb-3">
+                <div class="card h-100">
                     @if($article->cover_image)
-                        <img src="{{ Storage::url($article->cover_image) }}"
-                             class="card-img-top"
-                             style="height:180px; object-fit:cover;"
-                             alt="Capa">
-                    @else
-                        <div class="bg-secondary text-white d-flex align-items-center justify-content-center"
-                             style="height:180px;">
-                            <span class="fs-4">📄</span>
-                        </div>
+                        <img src="{{ Storage::url($article->cover_image) }}" class="card-img-top" alt="{{ $article->title }}" style="height: 200px; object-fit: cover;">
                     @endif
-
-                    <div class="card-body d-flex flex-column">
+                    <div class="card-body">
                         <h5 class="card-title">{{ $article->title }}</h5>
-
-                        <div class="mb-2">
-                            @if($article->category)
-                                <span class="badge bg-secondary">{{ $article->category->name }}</span>
-                            @endif
-                            @if($article->published_at)
-                                <span class="badge bg-success">
-                                    {{ $article->published_at->format('d/m/Y') }}
-                                </span>
-                            @else
-                                <span class="badge bg-warning text-dark">Rascunho</span>
-                            @endif
-                        </div>
-
-                        <p class="text-muted small mb-2">
-                            <strong>Autores:</strong>
-                            <span class="badge bg-info text-dark">{{ $article->developers->count() }}</span>
-                            @foreach($article->developers->take(3) as $dev)
-                                <span class="badge bg-light text-dark border">{{ $dev->name }}</span>
-                            @endforeach
-                            @if($article->developers->count() > 3)
-                                <span class="text-muted">+{{ $article->developers->count() - 3 }}</span>
-                            @endif
+                        <p class="card-text">
+                            <span class="badge bg-primary">{{ $article->category->name }}</span>
+                            <br>
+                            <strong>Publicado:</strong> {{ $article->published_at?->format('d/m/Y') ?? 'Rascunho' }}<br>
+                            <strong>Desenvolvedores:</strong> <span class="badge bg-info">{{ $article->developers->count() }}</span>
                         </p>
-
-                        <div class="mt-auto d-flex gap-2">
-                            <a href="{{ route('articles.edit', $article->id) }}"
-                               class="btn btn-sm btn-warning">Editar</a>
+                        <div class="btn-group" role="group">
+                            <a href="{{ route('articles.edit', $article->id) }}" class="btn btn-sm btn-warning">Editar</a>
                             <button wire:click="confirmDelete({{ $article->id }})"
-                                    class="btn btn-sm btn-danger">Excluir
-                            </button>
+                                    class="btn btn-sm btn-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal">Deletar</button>
                         </div>
                     </div>
                 </div>
             </div>
-        @empty
-            <div class="col-12">
-                <div class="alert alert-info">Nenhum artigo encontrado. <a href="{{ route('articles.create') }}">Crie o
-                        primeiro!</a></div>
-            </div>
-        @endforelse
+        @endforeach
     </div>
 
     {{ $articles->links() }}
 
-    @if($deleteId)
-        <div class="modal fade show d-block" tabindex="-1" style="background:rgba(0,0,0,0.5)">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Confirmar exclusão</h5>
-                    </div>
-                    <div class="modal-body">
-                        Tem certeza que deseja excluir este artigo? Esta ação não pode ser desfeita.
-                    </div>
-                    <div class="modal-footer">
-                        <button wire:click="$set('deleteId', null)" class="btn btn-secondary">Cancelar</button>
-                        <button wire:click="delete" class="btn btn-danger">Sim, excluir</button>
-                    </div>
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Exclusão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Tem certeza que deseja deletar este artigo?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" wire:click="delete" class="btn btn-danger" data-bs-dismiss="modal">Deletar</button>
                 </div>
             </div>
         </div>
-    @endif
-
+    </div>
 </div>

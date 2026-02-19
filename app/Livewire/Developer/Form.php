@@ -15,12 +15,15 @@ class Form extends Component
     public $skills = [];
     public $skillInput = '';
 
-    protected $rules = [
-        'name' => 'required|min:3',
-        'email' => 'required|email|unique:developers,email',
-        'seniority' => 'required|in:Jr,Pl,Sr',
-        'skills' => 'required|array|min:1',
-    ];
+    protected function rules()
+    {
+        return [
+            'name' => 'required|min:3',
+            'email' => 'required|email|unique:developers,email,' . ($this->developerId ?? 'NULL'),
+            'seniority' => 'required|in:Jr,Pl,Sr',
+            'skills' => 'required|array|min:1',
+        ];
+    }
 
     public function mount($developerId = null)
     {
@@ -50,10 +53,6 @@ class Form extends Component
 
     public function save()
     {
-        if ($this->developerId) {
-            $this->rules['email'] = 'required|email|unique:developers,email,' . $this->developerId;
-        }
-
         $this->validate();
 
         Developer::updateOrCreate(
@@ -74,6 +73,6 @@ class Form extends Component
     public function render()
     {
         return view('livewire.developer.form')
-            ->layout('layouts.app');
+            ->layout('layouts.livewire');
     }
 }

@@ -17,11 +17,15 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        $user = User::create([
+        $users = User::factory(2)->create();
+
+        $demo = User::create([
             'name' => 'Patrick',
             'email' => 'patrick@ceopag.com',
             'password' => Hash::make('password'),
         ]);
+
+        $allUsers = $users->push($demo);
 
         $categories = collect([
             'Notícias',
@@ -30,24 +34,28 @@ class DatabaseSeeder extends Seeder
             'Desenvolvimento',
             'DevOps',
             'Cloud Computing'
-        ])->map(fn($name) => Category::create([
-            'name' => $name,
-            'slug' => Str::slug($name),
-        ]));
+        ])->map(function ($name) {
+            return Category::create([
+                'name' => $name,
+                'slug' => Str::slug($name),
+            ]);
+        });
 
-        $developers = Developer::factory(6)->create([
-            'user_id' => $user->id,
-        ]);
+        $allUsers->each(function ($user) use ($categories) {
+            $developers = Developer::factory(rand(2, 3))->create([
+                'user_id' => $user->id,
+            ]);
 
-        $articles = Article::factory(10)->create([
-            'user_id' => $user->id,
-            'category_id' => fn() => $categories->random()->id,
-        ]);
+            $articles = Article::factory(rand(3, 4))->create([
+                'user_id' => $user->id,
+                'category_id' => fn() => $categories->random()->id,
+            ]);
 
-        $articles->each(function ($article) use ($developers) {
-            $article->developers()->attach(
-                $developers->random(rand(1, 3))->pluck('id')->toArray()
-            );
+            $articles->each(function ($article) use ($developers) {
+                $article->developers()->attach(
+                    $developers->random(rand(1, 2))->pluck('id')->toArray()
+                );
+            });
         });
     }
 }

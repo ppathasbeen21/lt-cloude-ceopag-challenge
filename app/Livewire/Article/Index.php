@@ -3,6 +3,7 @@
 namespace App\Livewire\Article;
 
 use App\Models\Article;
+use App\Models\Developer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Component;
@@ -13,11 +14,12 @@ class Index extends Component
     use WithPagination;
 
     public $search = '';
+    public $developerFilter = '';
     public $deleteId = null;
 
     protected $paginationTheme = 'bootstrap';
 
-    public function updatingSearch()
+    public function applyFilters()
     {
         $this->resetPage();
     }
@@ -30,6 +32,7 @@ class Index extends Component
     public function delete()
     {
         $article = Article::where('id', $this->deleteId)
+            ->where('user_id', Auth::id())
             ->firstOrFail();
 
         if ($article->cover_image) {
@@ -47,14 +50,24 @@ class Index extends Component
     {
         $articles = Article::query()
             ->with(['developers', 'category'])
+            ->where('user_id', Auth::id())
             ->when($this->search, function ($query) {
                 $query->where('title', 'like', "%{$this->search}%")
                     ->orWhere('slug', 'like', "%{$this->search}%");
             })
+            ->when($this->developerFilter, function ($query) {
+                $query->whereHas('developers', function ($q) {
+                    $q->where('developers.id', $this->developerFilter);
+                });
+            })
             ->latest()
             ->paginate(9);
 
-        return view('livewire.article.index', compact('articles'))
-            ->layout('layouts.app');
+        $developers = Developer::where('user_id', Auth::id())
+            ->orderBy('name')
+            ->get();
+
+        return view('livewire.article.index', compact('articles', 'developers'))
+            ->layout('layouts.livewire');
     }
 }
