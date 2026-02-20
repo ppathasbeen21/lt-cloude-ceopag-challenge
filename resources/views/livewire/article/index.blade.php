@@ -41,7 +41,11 @@
             <div class="col-md-4 col-12 mb-3">
                 <div class="card h-100">
                     @if($article->cover_image)
-                        <img src="{{ Storage::url($article->cover_image) }}" class="card-img-top" alt="{{ $article->title }}">
+                        <div class="ratio ratio-4x3">
+                            <img src="{{ Storage::url($article->cover_image) }}"
+                                 class="card-img-top"
+                                 alt="{{ $article->title }}">
+                        </div>
                     @endif
                     <div class="card-body">
                         <h5 class="card-title fw-bold">{{ $article->title }}</h5>
