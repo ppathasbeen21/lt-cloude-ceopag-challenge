@@ -57,7 +57,7 @@
                             <br>
                             <strong>Publicado:</strong> {{ $article->published_at?->format('d/m/Y') ?? 'Rascunho' }}<br>
                             <strong>Desenvolvedores:</strong>
-                            @forelse($article->developers->take(3) as $dev)
+                            @forelse($article->developers as $dev)
                                 <span class="badge bg-light text-dark border">{{ $dev->name }}</span>
                             @empty
                                 <span class="text-muted fst-italic">Sem autor</span>
