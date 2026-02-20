@@ -43,6 +43,7 @@ class Index extends Component
         $article->delete();
 
         $this->deleteId = null;
+        $this->dispatch('close-modal');
         session()->flash('message', 'Artigo excluído com sucesso!');
     }
 

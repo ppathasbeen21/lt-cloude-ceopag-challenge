@@ -14,7 +14,8 @@
 
     <div class="row mb-3">
         <div class="col-md-4">
-            <input type="text" wire:model="search" class="form-control" placeholder="Buscar por título...">
+            <input type="text" wire:model="search" class="form-control" placeholder="Buscar por título do artigo...">
+            <small>*Buscar por titulo</small>
         </div>
         <div class="col-md-4">
             <select wire:model="developerFilter" class="form-control">
@@ -40,15 +41,23 @@
             <div class="col-md-4 col-12 mb-3">
                 <div class="card h-100">
                     @if($article->cover_image)
-                        <img src="{{ Storage::url($article->cover_image) }}" class="card-img-top" alt="{{ $article->title }}" >
+                        <img src="{{ Storage::url($article->cover_image) }}" class="card-img-top" alt="{{ $article->title }}">
                     @endif
                     <div class="card-body">
-                        <h5 class="card-title">{{ $article->title }}</h5>
+                        <h5 class="card-title fw-bold">{{ $article->title }}</h5>
                         <p class="card-text">
+                            <span class="">
+                                {{ $article->content }}
+                            </span>
                             <span class="badge bg-primary">{{ $article->category->name }}</span>
                             <br>
                             <strong>Publicado:</strong> {{ $article->published_at?->format('d/m/Y') ?? 'Rascunho' }}<br>
-                            <strong>Desenvolvedores:</strong> <span class="badge bg-info">{{ $article->developers->count() }}</span>
+                            <strong>Desenvolvedores:</strong>
+                            @forelse($article->developers->take(3) as $dev)
+                                <span class="badge bg-light text-dark border">{{ $dev->name }}</span>
+                            @empty
+                                <span class="text-muted fst-italic">Sem autor</span>
+                            @endforelse
                         </p>
                         <div class="btn-group" role="group">
                             <a href="{{ route('articles.edit', $article->id) }}" class="btn btn-sm btn-warning">Editar</a>
@@ -77,9 +86,18 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" wire:click="delete" class="btn btn-danger" data-bs-dismiss="modal">Deletar</button>
+                    <button type="button" wire:click="delete" class="btn btn-danger">Deletar</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        Livewire.on('close-modal', () => {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
+            if (modal) modal.hide();
+            document.body.classList.remove('modal-open');
+            document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+        });
+    </script>
 </div>

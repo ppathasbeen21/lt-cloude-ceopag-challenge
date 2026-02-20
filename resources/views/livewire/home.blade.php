@@ -42,7 +42,7 @@
                                         <small class="text-muted ms-1">{{ $article->published_at?->format('d/m/Y') }}</small>
                                     </div>
                                     <div class="text-muted small">
-                                        <strong>Autores:</strong>
+                                        <strong>Desenvolvedores:</strong>
                                         @forelse($article->developers->take(3) as $dev)
                                             <span class="badge bg-light text-dark border">{{ $dev->name }}</span>
                                         @empty
